@@ -4,7 +4,7 @@ pipeline {
     environment {
         SPARK_VERSION="2.2.0"
         BRANCH_DIR="/builds2/sparkling-water/${BRANCH_NAME}"
-        BUILD_NUMBER_DIR=${BRANCH_DIR}/${BUILD_NUMBER}
+        BUILD_NUMBER_DIR="${BRANCH_DIR}/${BUILD_NUMBER}"
         LOG_FILE="${BUILD_NUMBER_DIR}/log.txt"
         SPARK_HOME="${env.WORKSPACE}/spark"
         JAVA_HOME="${JAVA_HOME_8}"
