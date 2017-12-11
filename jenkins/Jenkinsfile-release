@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         SPARK_VERSION="2.2.0"
+        DO_RELEASE="true"
+        DO_PROMOTION="true"
         BRANCH_DIR="/builds2/sparkling-water/${BRANCH_NAME}"
         BUILD_NUMBER_DIR="${BRANCH_DIR}/${BUILD_NUMBER}"
         LOG_FILE="${BUILD_NUMBER_DIR}/log.txt"
@@ -78,6 +80,49 @@ pipeline {
                         
                         echo "ci/git.properties"
                         cat ci/git.properties
+                        
+                        # Log some git stuff for debug purposes.
+                       
+                        """
+                }
+            }
+        }
+
+        stage('Build Sparkling Water'){
+            steps{
+                dir("${env.BUILD_NUMBER_DIR}"){
+                    sh """
+                        # Update gradle build number
+                        sed -i.backup -E "s/\\.[0-9]+-SNAPSHOT/.$BUILD_NUMBER/" gradle.properties
+                        REL_VERSION=\$( cat gradle.properties | grep version | grep -v '#' | sed -e "s/.*=//" )
+                        NEXT_BUILD_NUMBER=\$(( $BUILD_NUMBER + 1 ))
+                        NEW_VERSION=\$( echo "$REL_VERSION" | sed -E "s/\\.[0-9]+\$/.${NEXT_BUILD_NUMBER}-SNAPSHOT/" )
+                        echo "org.gradle.jvmargs=-XX:MaxPermSize=512m -Xmx1024m" >> gradle.properties
+                        echo 
+                        echo "gradle.properties"
+                        cat gradle.properties
+                        echo
+                        echo "RELEASE VERSION: $REL_VERSION"
+                        echo "NEW VERSION: $NEW_VERSION"
+                        echo
+                        
+                        # Fetch H2O python package
+                        mkdir -p private/
+                        curl \$(./gradlew -q printH2OWheelPackage) > private/h2o.whl
+                        export H2O_PYTHON_WHEEL="\$(pwd)/private/h2o.whl"
+                        
+                        # Perform a build
+                        ./gradlew build -x check 
+                        ./gradlew buildSparklingWaterDist
+                        if [ "$DO_RELEASE" = "true" ]; then
+                           git checkout -- gradle.properties
+                           if [ "$DO_PROMOTION" == "true" ]; then
+                             DO_PROMOTION="-PdoPromotion"
+                           else 
+                             DO_PROMOTION=""
+                           fi
+                          ./gradlew $DO_PROMOTION -PdoRelease -Pgradle.release.useAutomaticVersion=true -PreleaseVersion="$REL_VERSION" -PnewVersion="$NEW_VERSION" release -x check && git push
+                        fi
                         """
                 }
             }
