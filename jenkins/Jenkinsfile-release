@@ -96,14 +96,14 @@ pipeline {
                         sed -i.backup -E "s/\\.[0-9]+-SNAPSHOT/.$BUILD_NUMBER/" gradle.properties
                         REL_VERSION=\$( cat gradle.properties | grep version | grep -v '#' | sed -e "s/.*=//" )
                         NEXT_BUILD_NUMBER=\$(( $BUILD_NUMBER + 1 ))
-                        NEW_VERSION=\$( echo "$REL_VERSION" | sed -E "s/\\.[0-9]+\$/.${NEXT_BUILD_NUMBER}-SNAPSHOT/" )
+                        NEW_VERSION=\$( echo "\$REL_VERSION" | sed -E "s/\\.[0-9]+\$/.\${NEXT_BUILD_NUMBER}-SNAPSHOT/" )
                         echo "org.gradle.jvmargs=-XX:MaxPermSize=512m -Xmx1024m" >> gradle.properties
                         echo 
                         echo "gradle.properties"
                         cat gradle.properties
                         echo
-                        echo "RELEASE VERSION: $REL_VERSION"
-                        echo "NEW VERSION: $NEW_VERSION"
+                        echo "RELEASE VERSION: \$REL_VERSION"
+                        echo "NEW VERSION: \$NEW_VERSION"
                         echo
                         
                         # Fetch H2O python package
