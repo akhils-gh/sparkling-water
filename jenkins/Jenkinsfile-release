@@ -57,6 +57,30 @@ pipeline {
             steps{
                 dir("${env.BUILD_NUMBER_DIR}") {
                     checkout scm
+
+                    sh 'du -h'
+
+                    sh """
+
+                        # Update the build number
+                        mkdir -p ci
+                        echo "BUILD_NUMBER=${BUILD_NUMBER}" > ci/buildnumber.properties
+                        this_build_git_hash_long=`git rev-parse --verify HEAD`
+                        this_build_git_hash_short=`git describe --always`
+                        echo "BUILD_BRANCH_NAME=${BRANCH_NAME}" > ci/git.properties
+                        echo "BUILD_HASH=${this_build_git_hash_long}" >> ci/git.properties
+                        echo "BUILD_HASH_SHORT=${this_build_git_hash_short}" >> ci/git.properties
+
+                        echo
+                        echo "BUILD PROPERTIES"
+                        echo
+                        
+                        echo "ci/buildnumber.properties"
+                        cat ci/buildnumber.properties
+                        
+                        echo "ci/git.properties"
+                        cat ci/git.properties
+                        """
                 }
             }
         }
