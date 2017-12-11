@@ -90,20 +90,31 @@ pipeline {
 
         stage('Build Sparkling Water'){
             steps{
-                dir("${env.BUILD_NUMBER_DIR}"){
-                    sh """
-                        # Update gradle build number
-                        sed -i.backup -E "s/\\.[0-9]+-SNAPSHOT/.$BUILD_NUMBER/" gradle.properties
-                        export REL_VERSION=\$( cat gradle.properties | grep version | grep -v '#' | sed -e "s/.*=//" )
-                        export NEXT_BUILD_NUMBER=\$(( $BUILD_NUMBER + 1 ))
-                        NEW_VERSION=\$( echo "\$REL_VERSION" | sed -E "s/\\.[0-9]+\$/.\${NEXT_BUILD_NUMBER}-SNAPSHOT/" )
+                dir("${env.BUILD_NUMBER_DIR}") {
+                    script {
+                        // Update gradle build number
+
+
+                        def REL_VERSION = sh(script: '''
+                            sed -i.backup -E "s/\\.[0-9]+-SNAPSHOT/.$BUILD_NUMBER/" gradle.properties
+                            cat gradle.properties | grep version | grep -v '#' | sed -e "s/.*=//"
+                                        ''',
+                                returnStdout: true)
+
+                        def NEXT_BUILD_NUMBER = ${env.BUILD_NUMBER} + 1
+                        def NEW_VERSION = sh(script: """
+                            echo "$REL_VERSION" | sed -E "s/\\.[0-9]+\$/.${NEXT_BUILD_NUMBER}-SNAPSHOT/"
+                                        """,
+                                returnStdout: true)
+
+                        sh """
                         echo "org.gradle.jvmargs=-XX:MaxPermSize=512m -Xmx1024m" >> gradle.properties
                         echo 
                         echo "gradle.properties"
                         cat gradle.properties
                         echo
-                        echo "RELEASE VERSION: \$REL_VERSION"
-                        echo "NEW VERSION: \$NEW_VERSION"
+                        echo "RELEASE VERSION: $REL_VERSION"
+                        echo "NEW VERSION: $NEW_VERSION"
                         echo
                         
                         # Fetch H2O python package
@@ -124,6 +135,8 @@ pipeline {
                           ./gradlew $DO_PROMOTION -PdoRelease -Pgradle.release.useAutomaticVersion=true -PreleaseVersion="$REL_VERSION" -PnewVersion="$NEW_VERSION" release -x check && git push
                         fi
                         """
+                    }
+
                 }
             }
         }
