@@ -65,11 +65,9 @@ pipeline {
                         # Update the build number
                         mkdir -p ci
                         echo "BUILD_NUMBER=${BUILD_NUMBER}" > ci/buildnumber.properties
-                        this_build_git_hash_long=`git rev-parse --verify HEAD`
-                        this_build_git_hash_short=`git describe --always`
                         echo "BUILD_BRANCH_NAME=${BRANCH_NAME}" > ci/git.properties
-                        echo "BUILD_HASH=${this_build_git_hash_long}" >> ci/git.properties
-                        echo "BUILD_HASH_SHORT=${this_build_git_hash_short}" >> ci/git.properties
+                        echo "BUILD_HASH=\$(git rev-parse --verify HEAD)" >> ci/git.properties
+                        echo "BUILD_HASH_SHORT=\$(git describe --always)" >> ci/git.properties
 
                         echo
                         echo "BUILD PROPERTIES"
