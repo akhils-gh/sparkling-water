@@ -19,8 +19,8 @@ pipeline {
                     # Download Spark
                     wget -q "http://d3kbcqa49mib13.cloudfront.net/spark-${env.SPARK_VERSION}-bin-hadoop2.7.tgz"
                     mkdir -p "${env.SPARK_HOME}"
-                    tar zxvf ${env.SPARK}.tgz -C "${env.SPARK_HOME}" --strip-components 1
-                    rm -rf ${env.SPARK}.tgz
+                    tar zxvf spark-${env.SPARK_VERSION}-bin-hadoop2.7.tgz -C "${env.SPARK_HOME}" --strip-components 1
+                    rm -rf spark-${env.SPARK_VERSION}-bin-hadoop2.7.tgz
                """
             }
         }
