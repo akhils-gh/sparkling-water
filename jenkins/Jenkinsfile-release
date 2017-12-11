@@ -1,0 +1,62 @@
+pipeline {
+    agent {label: 'master'}
+
+    environment {
+        SPARK_VERSION="2.2.0"
+        BRANCH_DIR="/builds2/sparkling-water/${BRANCH_NAME}"
+        BUILD_NUMBER_DIR=${BRANCH_DIR}/${BUILD_NUMBER}
+        LOG_FILE="${BUILD_NUMBER_DIR}/log.txt"
+        SPARK_HOME="${env.WORKSPACE}/spark"
+        JAVA_HOME="${JAVA_HOME_8}"
+        PATH="${JAVA_HOME_8}/bin:${PATH}"
+        ZERO_BASED_BUILD_NUMBER="true"
+    }
+
+    stages {
+        stage('Download Spark') {
+            sh  """
+                    # Download Spark
+                    wget -q "http://d3kbcqa49mib13.cloudfront.net/spark-${env.SPARK_VERSION}-bin-hadoop2.7.tgz"
+                    mkdir -p "${env.SPARK_HOME}"
+                    tar zxvf ${env.SPARK}.tgz -C "${env.SPARK_HOME}" --strip-components 1
+                    rm -rf ${env.SPARK}.tgz
+               """
+        }
+
+        stage('Prepare Environment') {
+            steps {
+                sh """
+                    # Log commands.
+                    set -x
+                    # Stop on error.
+                    set -e
+                    
+                    # Transform build number to start with 0
+                    if [ -n "$ZERO_BASED_BUILD_NUMBER" ]; then
+                        BUILD_NUMBER="\$(( $BUILD_NUMBER - 1 ))"
+                    fi
+                    
+                    mkdir -p ${BUILD_NUMBER_DIR}
+                    # Do everything in the job directory.  Ignore the standard jenkins workspace.
+                    cd ${BUILD_NUMBER_DIR}
+
+                    # Log some stuff for debug purposes.
+                    date
+                    pwd
+                    env
+                    echo $PATH
+                    which java
+                    java -version
+                  
+                    """
+            }
+        }
+        stage('Clone the repo'){
+            steps{
+                dir("${env.BUILD_NUMBER_DIR}") {
+                    checkout scm
+                }
+            }
+        }
+    }
+}
