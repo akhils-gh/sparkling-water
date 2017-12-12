@@ -75,7 +75,6 @@ pipeline {
                             # Restore gradle.properties before release
                             git checkout -- gradle.properties
                             # ./gradlew -PdoPromotion -PdoRelease -Pgradle.release.useAutomaticVersion=true -PreleaseVersion="\$REL_VERSION" -PnewVersion="\$NEW_VERSION" release -x check && git push
-                            fi
                         """
                 }
             }
