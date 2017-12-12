@@ -82,7 +82,7 @@ pipeline {
 
 
         stage('Create Extended H2O Jars'){
-            steps{
+            steps {
                 dir("${env.BUILD_NUMBER_DIR}"){
                     sh """
                         # # Create h2o extended jar for all supported hadoop distributions
@@ -99,7 +99,7 @@ pipeline {
         }
 
         stage('Publish to S3') {
-            steps{
+            steps {
                 dir("${env.BUILD_NUMBER_DIR}"){
                     sh  """
                             s3cmd --rexclude='target/classes/*' --acl-public sync ${env.WORKSPACE}/dist/build/ s3://h2o-release/sparkling-water/${BRANCH_NAME}/${BUILD_NUMBER}/
@@ -149,6 +149,7 @@ pipeline {
                 }
             }
         }
+
         stage('Publish To PyPi') {
             steps {
                 dir("${env.BUILD_NUMBER_DIR}/py/build/pkg") {
