@@ -30,11 +30,6 @@ pipeline {
         stage('Prepare Environment') {
             steps {
                 sh """
-                    # Log commands.
-                    set -x
-                    # Stop on error.
-                    set -e
-                    
                     # Transform build number to start with 0
                     if [ -n "$ZERO_BASED_BUILD_NUMBER" ]; then
                         BUILD_NUMBER="\$(( $BUILD_NUMBER - 1 ))"
@@ -60,8 +55,6 @@ pipeline {
                 dir("${env.BUILD_NUMBER_DIR}") {
                     checkout scm
 
-                    sh 'du -h'
-
                     sh """
 
                         # Update the build number
@@ -80,9 +73,7 @@ pipeline {
                         
                         echo "ci/git.properties"
                         cat ci/git.properties
-                        
-                        # Log some git stuff for debug purposes.
-                       
+     
                         """
                 }
             }
