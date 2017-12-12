@@ -103,7 +103,7 @@ pipeline {
 
                         def NEXT_BUILD_NUMBER = ${env.BUILD_NUMBER} + 1
                         def NEW_VERSION = sh(script: """
-                            echo "$REL_VERSION" | sed -E "s/\\.[0-9]+\$/.${NEXT_BUILD_NUMBER}-SNAPSHOT/"
+                            echo "${REL_VERSION}" | sed -E "s/\\.[0-9]+\$/.${NEXT_BUILD_NUMBER}-SNAPSHOT/"
                                         """,
                                 returnStdout: true)
 
@@ -113,8 +113,8 @@ pipeline {
                         echo "gradle.properties"
                         cat gradle.properties
                         echo
-                        echo "RELEASE VERSION: $REL_VERSION"
-                        echo "NEW VERSION: $NEW_VERSION"
+                        echo "RELEASE VERSION: ${REL_VERSION}"
+                        echo "NEW VERSION: ${NEW_VERSION}"
                         echo
                         
                         # Fetch H2O python package
@@ -132,7 +132,7 @@ pipeline {
                            else 
                              DO_PROMOTION=""
                            fi
-                          ./gradlew $DO_PROMOTION -PdoRelease -Pgradle.release.useAutomaticVersion=true -PreleaseVersion="$REL_VERSION" -PnewVersion="$NEW_VERSION" release -x check && git push
+                         # ./gradlew $DO_PROMOTION -PdoRelease -Pgradle.release.useAutomaticVersion=true -PreleaseVersion="$REL_VERSION" -PnewVersion="$NEW_VERSION" release -x check && git push
                         fi
                         """
                     }
