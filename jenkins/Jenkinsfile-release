@@ -102,7 +102,7 @@ pipeline {
             steps {
                 dir("${env.BUILD_NUMBER_DIR}"){
                     sh  """
-                            s3cmd --rexclude='target/classes/*' --acl-public sync ${env.WORKSPACE}/dist/build/ s3://h2o-release/sparkling-water/${BRANCH_NAME}/${BUILD_NUMBER}/
+                            s3cmd --rexclude='target/classes/*' --acl-public sync dist/build/ s3://h2o-release/sparkling-water/${BRANCH_NAME}/${BUILD_NUMBER}/
                             
                             echo EXPLICITLY SET MIME TYPES AS NEEDED
                             list_of_html_files=`find dist/build -name '*.html' | sed 's/dist\\/build\\///g'`
