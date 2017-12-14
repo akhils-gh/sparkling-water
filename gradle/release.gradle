@@ -9,6 +9,7 @@ release {
   git {
     // Note: the releases are only allowed from master branch
     requireBranch = null
+    failOnCommitNeeded = false
     // DEBUG: disable dry run in production/CI
     // pushOptions = ["--dry-run"]
   }
