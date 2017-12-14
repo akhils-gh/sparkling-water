@@ -46,8 +46,10 @@ pipeline {
         }
 
         stage('Build Sparkling Water'){
-            steps{
-                dir("${env.BUILD_NUMBER_DIR}") {
+            steps {
+                withCredentials([file(credentialsId: 'release-gradle.properties', variable: 'GRADLE_PROPERTIES_PATH'),
+                                 file(credentialsId: 'release-secret-key-ring-file', variable: 'RING_FILE_PATH')]) {
+                    dir("${env.BUILD_NUMBER_DIR}") {
                         sh """
                             # Update gradle build number
                             sed -i.backup -E "s/\\.[0-9]+-SNAPSHOT/.$BUILD_NUMBER/" gradle.properties
@@ -74,8 +76,11 @@ pipeline {
                             
                             # Restore gradle.properties before release
                             git checkout -- gradle.properties
+                            cat ${GRADLE_PROPERTIES_PATH} >> gradle.properties
+                            echo signing.secretKeyRingFile=`cat $RING_FILE_PATH` >> gradle.properties
                             ./gradlew -PdoPromotion -PdoRelease -Pgradle.release.useAutomaticVersion=true -PreleaseVersion="\$REL_VERSION" -PnewVersion="\$NEW_VERSION" release -x check && git push
                         """
+                    }
                 }
             }
         }
