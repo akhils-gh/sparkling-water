@@ -77,7 +77,7 @@ pipeline {
                             # Restore gradle.properties before release
                             git checkout -- gradle.properties
                             cat ${GRADLE_PROPERTIES_PATH} >> gradle.properties
-                            echo signing.secretKeyRingFile=`cat $RING_FILE_PATH` >> gradle.properties
+                            echo signing.secretKeyRingFile=$RING_FILE_PATH >> gradle.properties
                             ./gradlew -PdoPromotion -PdoRelease -Pgradle.release.useAutomaticVersion=true -PreleaseVersion="\$REL_VERSION" -PnewVersion="\$NEW_VERSION" release -x check && git push
                         """
                     }
