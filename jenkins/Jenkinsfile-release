@@ -42,6 +42,8 @@ pipeline {
                 dir("${env.BUILD_NUMBER_DIR}") {
                     checkout scm
                 }
+                env.THIS_BUILD_GIT_HASH_LONG = sh(script: 'git rev-parse --verify HEAD', returnStdout: true).trim()
+                env.THIS_BUILD_GIT_HASH_SHORT = sh(script: 'git describe --always', returnStdout: true).trim()
             }
         }
 
@@ -65,6 +67,11 @@ pipeline {
                             echo "NEW VERSION: \${NEW_VERSION}"
                             echo
                             
+                            echo "BUILD_NUMBER=${currentBuild.number}" > gradle/buildnumber.properties
+                            echo "BUILD_BRANCH_NAME=${env.BRANCH_NAME}" > gradle/git.properties
+                            echo "BUILD_HASH=${env.THIS_BUILD_GIT_HASH_LONG}" >> gradle/git.properties
+                            echo "BUILD_HASH_SHORT=${env.THIS_BUILD_GIT_HASH_SHORT}" >> gradle/git.properties
+                        
                             # Fetch H2O python package
                             mkdir -p private/
                             curl \$(./gradlew -q printH2OWheelPackage) > private/h2o.whl
