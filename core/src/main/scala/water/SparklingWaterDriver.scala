@@ -36,22 +36,21 @@ object SparklingWaterDriver {
     val conf: SparkConf = H2OConf.checkSparkConf(
       new SparkConf()
         .setAppName("Sparkling Water Driver")
-        .setIfMissing("spark.master", sys.env.getOrElse("spark.master", "local"))
+        .set("spark.master", "local")
         .set("spark.ext.h2o.disable.ga", "true")
         .set("spark.driver.memory", "2G")
         .set("spark.executor.memory", "2G")
         .set("spark.ext.h2o.client.log.level", "DEBUG")
         .set("spark.ext.h2o.repl.enabled", "false") // disable repl
         .set("spark.scheduler.minRegisteredResourcesRatio", "1")
-        .set("spark.ext.h2o.backend.cluster.mode", sys.props.getOrElse("spark.ext.h2o.backend.cluster.mode", "internal"))
-        .set("spark.ext.h2o.client.ip", sys.props.getOrElse("H2O_CLIENT_IP", NetworkInit.findInetAddressForSelf().getHostAddress))
-        .set("spark.ext.h2o.external.start.mode", sys.props.getOrElse("spark.ext.h2o.external.start.mode", "manual")))
+        .set("spark.ext.h2o.backend.cluster.mode", "external")
+        .set("spark.ext.h2o.external.start.mode", "auto"))
 
 
 
     val spark = SparkSessionUtils.createSparkSession(conf)
     // Start H2O cluster only
-    val hc = H2OContext.getOrCreate(spark.sparkContext)
+    val hc = H2OContext.getOrCreate(spark.sparkContext, new H2OConf(spark.sparkContext).setNumH2OWorkers(3))
 
     val h2oFrame = new H2OFrame(new File(locate("smalldata/prostate/prostate.csv")))
 
