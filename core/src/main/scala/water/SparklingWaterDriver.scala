@@ -51,6 +51,7 @@ object SparklingWaterDriver {
     val spark = SparkSessionUtils.createSparkSession(conf)
     // Start H2O cluster only
     val hc = H2OContext.getOrCreate(spark.sparkContext, new H2OConf(spark.sparkContext))
+    System.out.println(s"Flow UI: http://${hc.h2oLocalClient}")
     System.out.println("Before loading frame")
     val h2oFrame = new H2OFrame(new File(locate("smalldata/prostate/prostate.csv")))
     System.out.println("After loading frame")
