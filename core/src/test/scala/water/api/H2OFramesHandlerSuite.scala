@@ -55,7 +55,7 @@ class H2OFramesHandlerSuite extends FunSuite with SharedH2OTestContext {
 
   }
 
-  test("H2OFramesHandler.toDataFrame() method, trying to convert H2OFrame which does not exist") {
+  ignore("H2OFramesHandler.toDataFrame() method, trying to convert H2OFrame which does not exist") {
     val h2oFramesHandler = new H2OFramesHandler(sc, hc)
     val req = new DataFrameIDV3
     req.h2oframe_id = "does_not_exist"
