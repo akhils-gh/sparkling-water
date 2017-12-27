@@ -114,5 +114,5 @@ integTest {
     systemProperty "sparkling.assembly.jar", "${project(":sparkling-water-assembly").configurations.shadow.artifacts.file.join(',')}"
     systemProperty "sparkling.itest.jar", "${integTestJar.archivePath}"
 
-    // testLogging.showStandardStreams = true
+    testLogging.showStandardStreams = true
 }
