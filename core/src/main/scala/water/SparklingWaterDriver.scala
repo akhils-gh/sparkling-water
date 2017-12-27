@@ -19,14 +19,10 @@ package water
 
 import java.io.File
 
-import org.apache.spark.h2o.backends.SharedBackendConf
 import org.apache.spark.h2o.{H2OConf, H2OContext}
 import org.apache.spark.{SparkConf, SparkSessionUtils}
-import water.api.TestUtils
 import water.fvec.H2OFrame
 import water.init.NetworkInit
-
-import scala.util.Random
 
 /**
   * A simple wrapper to allow launching H2O itself on the
