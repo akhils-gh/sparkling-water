@@ -55,7 +55,7 @@ object SparklingWaterDriver {
     System.out.println("Before loading frame")
     val h2oFrame = new H2OFrame(new File(locate("smalldata/prostate/prostate.csv")))
     System.out.println("After loading frame")
-
+    hc.stop()
 
   }
 
