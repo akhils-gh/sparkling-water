@@ -22,7 +22,6 @@ import java.io.File
 import org.apache.spark.h2o.{H2OConf, H2OContext}
 import org.apache.spark.{SparkConf, SparkSessionUtils}
 import water.fvec.H2OFrame
-import water.init.NetworkInit
 
 /**
   * A simple wrapper to allow launching H2O itself on the
@@ -45,7 +44,7 @@ object SparklingWaterDriver {
         .set("spark.scheduler.minRegisteredResourcesRatio", "1")
         .set("spark.ext.h2o.backend.cluster.mode", "external")
         .set("spark.ext.h2o.external.start.mode", "auto")
-        .set("spark.ext.h2o.external.cluster.num.h2o.nodes", "1"))
+        .set("spark.ext.h2o.external.cluster.num.h2o.nodes", "2"))
 
 
 
