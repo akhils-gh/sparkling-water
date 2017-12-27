@@ -67,7 +67,6 @@ class ExternalH2OBackend(val hc: H2OContext) extends SparklingBackend with Exter
       "-J", "-log_level", "-J", conf.h2oNodeLogLevel,
       "-timeout", conf.clusterStartTimeout.toString,
       "-disown",
-      "-J", "-watchdog_stop_without_client",
       "-J", "-watchdog_client_connect_timeout", "-J", conf.clientConnectionTimeout.toString,
       "-J", "-watchdog_client_retry_timeout", "-J", conf.clientCheckRetryTimeout.toString
     )
