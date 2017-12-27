@@ -45,7 +45,7 @@ object SparklingWaterDriver {
         .set("spark.scheduler.minRegisteredResourcesRatio", "1")
         .set("spark.ext.h2o.backend.cluster.mode", "external")
         .set("spark.ext.h2o.external.start.mode", "auto")
-        .set("spark.ext.h2o.external.cluster.num.h2o.nodes", "3"))
+        .set("spark.ext.h2o.external.cluster.num.h2o.nodes", "2"))
 
 
 
