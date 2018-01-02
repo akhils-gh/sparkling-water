@@ -48,11 +48,13 @@ object SparklingWaterDriver {
         .set("spark.ext.h2o.external.cluster.num.h2o.nodes", "2")
         .set("spark.ext.h2o.client.verbose", "true"))
 
-    val ret = DKV.get("a")
 
     val spark = SparkSessionUtils.createSparkSession(conf)
     // Start H2O cluster only
     val hc = H2OContext.getOrCreate(spark.sparkContext, new H2OConf(spark.sparkContext))
+
+    val ret = DKV.get("a")
+
     System.out.println(s"Flow UI: http://${hc.h2oLocalClient}")
     System.out.println("Before loading frame")
     val h2oFrame = new H2OFrame(new File(locate("smalldata/prostate/prostate.csv")))
