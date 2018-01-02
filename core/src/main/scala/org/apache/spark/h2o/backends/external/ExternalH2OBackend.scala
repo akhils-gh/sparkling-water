@@ -66,11 +66,9 @@ class ExternalH2OBackend(val hc: H2OContext) extends SparklingBackend with Exter
       "-output", conf.HDFSOutputDir.get,
       "-J", "-log_level", "-J", conf.h2oNodeLogLevel,
       "-timeout", conf.clusterStartTimeout.toString,
-      "-disown",
-      "-J", "-watchdog_client_connect_timeout", "-J", conf.clientConnectionTimeout.toString,
-      "-J", "-watchdog_client_retry_timeout", "-J", conf.clientCheckRetryTimeout.toString
+      "-disown"
     )
-    
+
     // start external H2O cluster and log the output
     logInfo("Command used to start H2O on yarn: " + cmdToLaunch.mkString(" "))
 
