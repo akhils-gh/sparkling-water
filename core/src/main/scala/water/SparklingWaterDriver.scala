@@ -22,6 +22,7 @@ import java.io.File
 import org.apache.spark.h2o.{H2OConf, H2OContext}
 import org.apache.spark.{SparkConf, SparkSessionUtils}
 import water.fvec.H2OFrame
+import water.parser.ParseSetup
 
 /**
   * A simple wrapper to allow launching H2O itself on the
@@ -53,11 +54,9 @@ object SparklingWaterDriver {
     // Start H2O cluster only
     val hc = H2OContext.getOrCreate(spark.sparkContext, new H2OConf(spark.sparkContext))
 
-    val ret = DKV.get("a")
-
     System.out.println(s"Flow UI: http://${hc.h2oLocalClient}")
     System.out.println("Before loading frame")
-    val h2oFrame = new H2OFrame(new File(locate("smalldata/prostate/prostate.csv")))
+    ParseSetup.createHexName("prostate.csv")
     System.out.println("After loading frame")
     hc.stop()
 
