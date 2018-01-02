@@ -40,11 +40,13 @@ object SparklingWaterDriver {
         .set("spark.driver.memory", "2G")
         .set("spark.executor.memory", "2G")
         .set("spark.ext.h2o.client.log.level", "DEBUG")
+        .set("spark.ext.h2o.node.log.level", "DEBUG")
         .set("spark.ext.h2o.repl.enabled", "false") // disable repl
         .set("spark.scheduler.minRegisteredResourcesRatio", "1")
         .set("spark.ext.h2o.backend.cluster.mode", "external")
         .set("spark.ext.h2o.external.start.mode", "auto")
-        .set("spark.ext.h2o.external.cluster.num.h2o.nodes", "2"))
+        .set("spark.ext.h2o.external.cluster.num.h2o.nodes", "2")
+        .set("spark.ext.h2o.client.verbose", "true"))
 
     val ret = DKV.get("a")
 
