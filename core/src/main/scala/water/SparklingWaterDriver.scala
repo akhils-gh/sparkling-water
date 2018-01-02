@@ -23,6 +23,7 @@ import org.apache.spark.h2o.{H2OConf, H2OContext}
 import org.apache.spark.{SparkConf, SparkSessionUtils}
 import water.fvec.H2OFrame
 import water.parser.ParseSetup
+import water.util.Log
 
 /**
   * A simple wrapper to allow launching H2O itself on the
@@ -56,7 +57,15 @@ object SparklingWaterDriver {
 
     System.out.println(s"Flow UI: http://${hc.h2oLocalClient}")
     System.out.println("Before loading frame")
-    ParseSetup.createHexName("prostate.csv")
+    var k = Key.make("prostate.csv")
+
+    // Renumber to handle dup names
+    if (DKV.get(k) == null) {
+     throw new RuntimeException("Should not be in: " + k)
+    }else{
+      Log.info("All ok")
+    }
+
     System.out.println("After loading frame")
     hc.stop()
 
