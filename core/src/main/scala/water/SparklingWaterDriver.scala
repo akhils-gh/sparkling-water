@@ -57,13 +57,13 @@ object SparklingWaterDriver {
 
     System.out.println(s"Flow UI: http://${hc.h2oLocalClient}")
     System.out.println("Before loading frame")
-    var k = Key.make("prostate.csv")
+    val k = Key.make("prostate.csv")
 
     // Renumber to handle dup names
     if (DKV.get(k) == null) {
-     throw new RuntimeException("Should not be in: " + k)
-    }else{
       Log.info("All ok")
+    }else{
+      throw new RuntimeException("Should not be in: " + k)
     }
 
     System.out.println("After loading frame")
