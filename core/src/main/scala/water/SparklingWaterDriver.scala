@@ -46,7 +46,7 @@ object SparklingWaterDriver {
         .set("spark.ext.h2o.external.start.mode", "auto")
         .set("spark.ext.h2o.external.cluster.num.h2o.nodes", "2"))
 
-
+    val ret = DKV.get("a")
 
     val spark = SparkSessionUtils.createSparkSession(conf)
     // Start H2O cluster only
